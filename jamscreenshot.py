@@ -9,7 +9,6 @@ from PyQt5.QtGui import QPixmap, QPainter, QPen, QIcon, QFont, QColor, QCursor, 
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QTextEdit, QFileDialog, QGroupBox, QSlider, QWidget, \
     QColorDialog
 import jamresourse  # 导入资源文件
-from pynput import keyboard
 
 
 class MaskLayer(QLabel):  # 遮罩层
