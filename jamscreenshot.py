@@ -2,6 +2,7 @@ import math
 import os
 import sys
 import time
+from numpy import array, uint8
 
 import cv2
 from PIL import Image
@@ -10,6 +11,7 @@ from PyQt5.QtGui import QPixmap, QPainter, QPen, QIcon, QFont, QColor, QCursor, 
     QBrush, QPainterPath
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QTextEdit, QFileDialog, QGroupBox, QSlider, QWidget, \
     QColorDialog, QMenu
+
 import jamresourse  # 导入资源文件
 
 
@@ -21,26 +23,21 @@ class Finder():  # 自动选区类
         self.parent = parent
         self.img = None
 
-    def find_contours_setup(self):
+    def find_contours_setup(self,pim):
         # t = time.process_time()
+        self.img = pim
         self.setup()
         # print('ffindt0', time.process_time() - t)
         self.find_contours()
         # print('ffindt', time.process_time() - t)
 
     def setup(self):
-        t1 = time.process_time()
-        self.img = cv2.imread('j_temp/get.png')
-        t2 = time.process_time()
         self.h, self.w, _ = self.img.shape
         gray = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)  # 灰度化
-        t3 = time.process_time()
         # ret, th = cv2.threshold(gray, 50, 255, cv2.THRESH_BINARY)
         # th = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)  # 自动阈值
         th = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)  # 自动阈值
-        t4 = time.process_time()
         self.contours, hierarchy = cv2.findContours(th, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-        print('setuptime', t2 - t1, t3 - t2, t4 - t3)
 
     def find_contours(self):
         self.rect_list = [[0, 0, self.w, self.h]]
@@ -454,9 +451,9 @@ class Slabel(QLabel):  # 截图功能主界面
         self.eraser = QPushButton('', self.painter_box)
         self.backgrounderaser = QPushButton('', self.painter_box)
 
-        # self.init_slabel()
-        self.init_slabel_thread = Commen_Thread(self.init_slabel)
-        self.init_slabel_thread.start()  # 后台初始化线程
+        self.init_slabel()
+        # self.init_slabel_thread = Commen_Thread(self.init_slabel)
+        # self.init_slabel_thread.start()  # 后台初始化线程
 
         self.setVisible(False)
         self.showFullScreen()
@@ -686,19 +683,31 @@ class Slabel(QLabel):  # 截图功能主界面
             self.choise_pix.setIcon(icon4)
 
     def screen_shot(self):
-        window.hide()
-        pix = self.screen.grabWindow(self.id)
-        self.setPixmap(pix)
-        self.mask.setGeometry(0, 0, self.width(), self.height())
+        try:
+            window.hide()
+        except:
+            pass
+        t1 = time.process_time()
+        get_pix = self.screen.grabWindow(self.id)
+        pixmap = QPixmap(get_pix.width(), get_pix.height())
+        pixmap.fill(Qt.transparent)
+        painter = QPainter(pixmap)
+        # painter.setRenderHint(QPainter.Antialiasing)
+        painter.drawPixmap(0, 0, get_pix)
+        painter.end()  # 一定要end
+        self.setPixmap(pixmap)
+        self.mask.setGeometry(0, 0, get_pix.width(), get_pix.height())
         self.mask.show()
+
         # self.paintlayer.__init__(self)
         # self.paintlayer.pixpng = ":/msk.jpg"
-        self.paintlayer.setGeometry(0, 0, self.width(), self.height())
-        self.paintlayer.show()
-        self.paintlayer.setPixmap(QPixmap(self.width(), self.height()))
+        self.paintlayer.setGeometry(0, 0, get_pix.width(), get_pix.height())
+        self.paintlayer.setPixmap(QPixmap(get_pix.width(), get_pix.height()))
         self.paintlayer.pixmap().fill(Qt.transparent)  # 重点,不然不透明
-        self.showFullScreen()  # 全屏必须在所有控件画完再进行
-
+        self.paintlayer.show()
+        # self.setGeometry(0, 0, pix.width(), pix.height())  # 全屏必须在所有控件画完再进行
+        # self.show()
+        self.showFullScreen()
         self.backgrounderaser_pointlist = []
         self.eraser_pointlist = []
         self.drawrect_pointlist = [[-2, -2], [-2, -2], 0]
@@ -708,27 +717,40 @@ class Slabel(QLabel):  # 截图功能主界面
         self.drawcircle_pointlist = [[-2, -2], [-2, -2], 0]
         self.old_pen = self.old_eraser = self.old_brush = self.old_backgrounderaser = [-2, -2]
         self.finding_rect = True
-
         # self.text_box.setGeometry(0, 0, 50, 50)
 
-        self.painter_box.setStyleSheet("QGroupBox{border:none}")
-        self.init_ss_thread = Commen_Thread(self.init_ss_thread_fun)
+        self.init_ss_thread = Commen_Thread(self.init_ss_thread_fun, get_pix)
 
         # self.old_backgrounderaser=[-2, -2]
         # self.old_pen = [-2, -2]
         # self.old_brush = [-2, -2]
         # self.drawrect_bs_on = self.pen_on = False
-        pix.save("j_temp/get.png")
-        self.init_ss_thread.start()
 
-    def init_ss_thread_fun(self):
-        self.finder.find_contours_setup()
+        t5 = time.process_time()
+        self.init_ss_thread.start()
+        print('sstime:', time.process_time() - t5, time.process_time() - t1)
+
+    def init_ss_thread_fun(self,get_pix):
+        qimg = get_pix.toImage()
+        temp_shape = (qimg.height(), qimg.bytesPerLine() * 8 // qimg.depth())
+        temp_shape += (4,)
+        ptr = qimg.bits()
+        ptr.setsize(qimg.byteCount())
+        result = array(ptr, dtype=uint8).reshape(temp_shape)
+        result = result[..., :3]
+
+        # self.get_pix.save("j_temp/get.png")
+        self.finder.find_contours_setup(result)
         self.paintlayer.pixpng = ":/msk.jpg"
         # self.text_box.resize(100, 30)
         self.text_box.setTextColor(self.pencolor)
         self.text_box.setStyleSheet("background-color: rgba(0, 0, 0, 10);")
         self.text_box.hide()
         self.choice_clor.setStyleSheet('background-color:rgb(255,0,0);')
+        self.painter_box.setStyleSheet("QGroupBox{border:none}")
+        self.setStyleSheet("QPushButton{color:black;background-color:rgb(239,239,239);padding:1px 4px;}"
+                           "QPushButton:hover{color:green;background-color:rgb(200,200,100);}")
+
 
     def freeze_img(self):
         self.cutpic(2)
@@ -934,7 +956,10 @@ class Slabel(QLabel):  # 截图功能主界面
                 # self.btn2.hide()
                 self.update()
             else:
-                window.show()
+                try:
+                    window.show()
+                except:
+                    pass
                 self.clear_and_hide()
 
     # 鼠标释放事件
@@ -1207,11 +1232,11 @@ class Window(QWidget):
         super().hide()
         self.setWindowOpacity(1)
 
-
-app = QApplication(sys.argv)
-screenshots = Slabel()
-window = Window()
-print('''激活窗口后,按下Alt+z键进行截屏!\n如需全局快捷键方法可参考:https://blog.csdn.net/Fandes_F/article/details/103226341\n
-本项目地址:https://github.com/fandesfyf/Jamscreenshot\n源码重构自本人项目Jamtools的截屏部分功能,如需滚动截屏、截屏文字识别、
-图像主体识别功能可直接下载Beta版Jamtools安装文件(目前最新版为0.7.5Beta)，链接：https://download.csdn.net/download/Fandes_F/12318081''')
-sys.exit(app.exec_())
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    screenshots = Slabel()
+    window = Window()
+    print('''激活窗口后,按下Alt+z键进行截屏!\n如需全局快捷键方法可参考:https://blog.csdn.net/Fandes_F/article/details/103226341\n
+    本项目地址:https://github.com/fandesfyf/Jamscreenshot\n源码重构自本人项目Jamtools的截屏部分功能,如需滚动截屏、截屏文字识别、
+    图像主体识别功能可直接下载Beta版Jamtools安装文件(目前最新版为0.7.5Beta)，链接：https://download.csdn.net/download/Fandes_F/12318081''')
+    sys.exit(app.exec_())
