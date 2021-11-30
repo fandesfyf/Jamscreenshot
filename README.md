@@ -12,16 +12,16 @@
 # 效果图
 加了一个简陋的主界面
 
-![image](https://github.com/fandesfyf/Jamscreenshot/blob/master/image/60430e4e61d28d0e79da9d58e46037f.png)
+![image](image/60430e4e61d28d0e79da9d58e46037f.png)
 
 截图效果：
-![image](https://github.com/fandesfyf/Jamscreenshot/blob/master/image/jp00.png)
+![image](image/jp00.png)
 
-![image](https://github.com/fandesfyf/Jamscreenshot/blob/master/image/jp2.png)
+![image](image/jp2.png)
 
-![image](https://github.com/fandesfyf/Jamscreenshot/blob/master/image/58e820362dd287f6668e011e20a1020.png)
+![image](image/58e820362dd287f6668e011e20a1020.png)
 
-![image](https://github.com/fandesfyf/Jamscreenshot/blob/master/image/0180a5748681abe7254ce6734aa64de.png)
+![image](image/0180a5748681abe7254ce6734aa64de.png)
 可以看到，几乎实现了微信截图的所有功能，还有一些微信截图没有的功能，像材质图片画笔、背景橡皮擦、所有颜色自选、画笔大小/放大镜倍数可通过滑轮调节等；
 代码总长2000+行，直接运行即可！
 
