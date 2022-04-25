@@ -5,6 +5,14 @@
 
 如果你还需要滚动截屏功能,可以看看[这个](https://github.com/fandesfyf/roll_screenshot)
 
+<!-- 个人资料徽标 -->
+<div align="center">
+<!--   <a href="https://twitter.com/fandesfyf/"><img src="https://img.shields.io/badge/twitter-%E6%8E%A8%E7%89%B9-blue"></a>&emsp; -->
+  <a href="https://blog.csdn.net/Fandes_F/"><img src="https://img.shields.io/badge/CSDN-%E5%8D%9A%E5%AE%A2-c32136"></a>&emsp;
+  <a href="https://space.bilibili.com/387051620/"><img src="https://img.shields.io/badge/bilibili-B%E7%AB%99-ff69b4"></a>&emsp;
+<!-- 访客数统计徽标 -->
+  <img src="https://visitor-badge.glitch.me/badge?page_id=ssjam" alt="访客" /></div>
+  
 ----20210206更新------
 
 新增了透视裁剪工具(类似于PS里的用法)、多边形截图工具、取色器工具、油漆桶工具、背景还原画笔(配合背景橡皮擦使用)、支持回退10步操作历史记录、新增一键还原按钮、新增智能选框的开关。画笔等增加透明度支持，在画笔/标记时可以通过按住ctrl键+滚轮快速调整画笔透明度，新增常用颜色到取色按钮(鼠标划过即可显示)、固定截屏在屏幕上时可以通过按住ctrl+滚轮快速调节截屏的透明度
