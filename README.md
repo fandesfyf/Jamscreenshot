@@ -1,5 +1,5 @@
 # Jamscreenshot
-一个用python和pyqt5实现的类似微信QQ截屏的工具源码，提取自本人自制工具集[Jamtools](https://github.com/fandesfyf/JamTools)里面的截屏部分整合，代码完全原创，分享出来大家一起学习鸭! 转载请标一下出处谢谢！
+一个用python和pyqt5实现的类似微信QQ截屏的工具源码，提取自本人自制工具集[Jamtools](https://github.com/fandesfyf/JamTools)里面的截屏部分功能整合，代码完全原创，分享出来大家一起学习鸭! 转载请标一下出处谢谢！
 > 注意这个仓库中的代码可能会落后于[Jamtools](https://github.com/fandesfyf/JamTools)仓库, 一般都是先更新到Jamtools之后再提取截屏功能的更新
 
 如果你还需要滚动截屏功能,可以看看[这个](https://github.com/fandesfyf/roll_screenshot)
