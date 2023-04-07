@@ -14,7 +14,7 @@
   
 
 ### 酱截屏(全局快捷键Alt+z)
-- 截屏功能页面,包含隐藏窗口、自动保存文件、复制文件还是图像数据、滚动截屏参数等
+- [Jamtools](https://github.com/fandesfyf/JamTools)中的截屏功能页面,包含隐藏窗口、自动保存文件、复制文件还是图像数据、滚动截屏等参数的配置,可以直接从release下载安装程序
 
 ![image](image/jp.png)
 
